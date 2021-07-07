@@ -16,7 +16,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'      
+            - 'SHA256:E2lYFPGzYhYbbZnuHpqnqr30WBCM0qjoxlZ56qXTa0E'      
 
       - restore_cache:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}

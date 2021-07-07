@@ -16,7 +16,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - 'SHA256:E2lYFPGzYhYbbZnuHpqnqr30WBCM0qjoxlZ56qXTa0E'
+            - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'
       - run:
           name: Keyscan mydomain.com (HACK)
           command: ssh-keyscan -H 13.58.105.142 >> ~/.ssh/known_hosts   

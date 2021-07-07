@@ -29,7 +29,7 @@ jobs:
           paths:
             - build
   test:
-    # Remove if parallelism is not desired
+    # Remove if parallelism is not desireds
     parallelism: 2
     environment:
       # Configure the JVM and Gradle to avoid OOM errors

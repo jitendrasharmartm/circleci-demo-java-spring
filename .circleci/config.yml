@@ -16,7 +16,10 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - 'SHA256:E2lYFPGzYhYbbZnuHpqnqr30WBCM0qjoxlZ56qXTa0E'      
+            - 'SHA256:E2lYFPGzYhYbbZnuHpqnqr30WBCM0qjoxlZ56qXTa0E'
+      - run:
+          name: Keyscan mydomain.com (HACK)
+          command: ssh-keyscan -H 13.58.105.142 >> ~/.ssh/known_hosts   
 
       - restore_cache:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}

@@ -1,4 +1,4 @@
-version: 2
+version: 2.0
 jobs:
   build:
     orbs:
@@ -43,4 +43,3 @@ jobs:
             if ! [ -x "$(which pip3)" ]; then
               sudo apt-get -y install python3-pip
             fi
-      - aws-cli/install

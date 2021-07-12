@@ -1,21 +1,14 @@
-Version: 2.0
+version: 2
 jobs:
   build:
-    docker:
-      - image: 'cimg/python:3.6'
+    docker: 
+      - image: cibuilds/aws:1.15.73
+    environment:
+      aws_access_key_id: $AWS_ACCESS_KEY_ID
+      aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
     steps:
-      - checkout
-      - run: mkdir bucket && echo "lorem ipsum" > bucket/build_asset.txt
-      - aws-s3/sync:
-          arguments: |
-            --acl public-read \
-            --cache-control "max-age=86400"
-          aws-access-key-id: AKIAQMQ4OVQ3I5KYH46O
-          aws-region: us-east-2
-          aws-secret-access-key: AKIAQMQ4OVQ3EH57GV6A
-          from: bucket
-          to: 's3://my-s3-bucket-name/prefix'
-      - aws-s3/copy:
-          arguments: '--dryrun'
-          from: target/demo-java-spring-0.0.1-SNAPSHOT.ja
-          to: 's3://codedeploycircleci/Files'
+      - attach_workspace:
+          at: ./workspace
+      - run: 
+          name: Deploy to S3 if tests pass and branch is develop
+          command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files --delete

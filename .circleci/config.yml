@@ -38,6 +38,12 @@ deploy:
       - image: cibuilds/aws:1.16.1
 steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'
+      - run:
+          name: Keyscan mydomain.com (HACK)
+          command: ssh-keyscan -H 18.189.170.177 >> ~/.ssh/known_hosts 
       - attach_workspace:
          at: /home/circleci
       - run:

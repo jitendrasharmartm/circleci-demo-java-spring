@@ -33,9 +33,9 @@ jobs:
       
       - store_artifacts:
           path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
-      - aws-s3/copy:
+      - aws_s3/copy:
           from: target/demo-java-spring-0.0.1-SNAPSHOT.jar
           to: s3://codedeploycircleci/Files        
       - run:
-          name: AWS File Copy on S3 Bucket
+          name: AWS File Copy
           command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files --dryrun            

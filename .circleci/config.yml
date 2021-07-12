@@ -10,8 +10,6 @@ jobs:
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
-          aws_access_key_id: $AWS_ACCESS_KEY_ID
-          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
 
     steps:
 
@@ -40,6 +38,15 @@ jobs:
       
       - store_artifacts:
           path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
+deploy:
+    docker:
+      - image: cibuilds/aws:1.16.1
+    environment:
+      aws_access_key_id: $AWS_ACCESS_KEY_ID
+      aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    steps:
+      - attach_workspace:
+          at: ./workspace
       - run: 
           name: Deploy to S3 if tests pass and branch is develop
           command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files

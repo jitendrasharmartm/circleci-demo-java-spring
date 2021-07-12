@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     orbs:
-      aws-cli: circleci/aws-cli@2.0
+      aws-cli: circleci/aws-cli@0.1.6
     
     working_directory: ~/circleci-demo-java-spring
 
@@ -33,6 +33,17 @@ jobs:
       
       - store_artifacts:
           path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
+      - run:
+          name: Install the aws cli and python
+          command: |
+            sudo apt-get update
+            if ! [ -x "$(which python3)" ]; then
+              sudo apt-get -y install python3
+            fi
+            if ! [ -x "$(which pip3)" ]; then
+              sudo apt-get -y install python3-pip
+            fi
+      - aws-cli/install
       - aws_s3/copy:
           from: target/demo-java-spring-0.0.1-SNAPSHOT.jar
           to: s3://codedeploycircleci/Files        

@@ -11,4 +11,4 @@ jobs:
           at: ./workspace
       - run: 
           name: Deploy to S3 if tests pass and branch is develop
-          command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files --delete
+          command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files

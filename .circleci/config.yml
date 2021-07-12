@@ -14,10 +14,15 @@ jobs:
     steps:
 
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'
+      - run:
+          name: Keyscan mydomain.com (HACK)
+          command: ssh-keyscan -H 13.58.105.142 >> ~/.ssh/known_hosts   
 
       - restore_cache:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
-          
       
       - run: mvn dependency:go-offline
       
@@ -26,7 +31,7 @@ jobs:
             - ~/.m2
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
       
-      - run: git clone git@github.com:jitendrasharmartm/circleci-demo-java-spring.git -b maven
+      - run: mvn package
       
       - store_test_results:
           path: target/surefire-reports

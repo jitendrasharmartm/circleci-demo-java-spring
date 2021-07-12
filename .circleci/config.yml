@@ -33,19 +33,9 @@ jobs:
       
       - store_artifacts:
           path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
-deploy:
-    docker:
-      - image: cibuilds/aws:1.16.1
-steps:
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'
+      - aws-s3/copy:
+          from: target/demo-java-spring-0.0.1-SNAPSHOT.jar
+          to: s3://codedeploycircleci/Files        
       - run:
-          name: Keyscan mydomain.com (HACK)
-          command: ssh-keyscan -H 18.189.170.177 >> ~/.ssh/known_hosts 
-      - attach_workspace:
-         at: /home/circleci
-      - run:
-          name: AWS File Copy
-          command: aws s3 sync target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files/ --region us-east-2               
+          name: AWS File Copy on S3 Bucket
+          command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files --dryrun            

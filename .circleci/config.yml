@@ -1,16 +1,45 @@
-version: '2.1'
-orbs:
-  aws-cli: circleci/aws-cli@2.0
+version: 2
 jobs:
-  aws-cli-example:
-    executor: aws-cli/default
+  build:
+    orbs:
+      aws-cli: circleci/aws-cli@2.0
+    
+    working_directory: ~/circleci-demo-java-spring
+
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+      - image: circleci/postgres:9.6.3-alpine
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+
     steps:
+
       - checkout
-      - aws-cli/setup:
-          profile-name: example
-      - run: echo "Run your code here" >> test.txt
-workflows:
-  aws-cli:
-    jobs:
-      - aws-cli-example:
-          context: aws
+      - restore_cache:
+          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
+      
+      - run: mvn dependency:go-offline
+      
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
+      
+      - run: mvn package
+      
+      - store_test_results:
+          path: target/surefire-reports
+      
+      - store_artifacts:
+          path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
+deploy:
+    docker:
+      - image: cibuilds/aws:1.16.1
+steps:
+      - checkout
+      - attach_workspace:
+         at: /home/circleci
+      - run:
+          name: AWS File Copy
+          command: aws s3 sync target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci.s3-website.us-east-2.amazonaws.com --region us-east-2               

@@ -31,9 +31,7 @@ jobs:
       
       - store_artifacts:
           path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
-      - run:
-         name: Install PIP
-         command: sudo apt-get install python-pip python-dev
+
       - run:
          name: Install awscli
          command: sudo pip install awscli   

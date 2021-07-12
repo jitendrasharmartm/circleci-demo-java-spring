@@ -1,45 +1,21 @@
-version: 2.0
+Version: 2.0
 jobs:
   build:
-    orbs:
-      aws-cli: circleci/aws-cli@0.1.6
-    
-    working_directory: ~/circleci-demo-java-spring
-
     docker:
-      - image: circleci/openjdk:8-jdk-stretch
-      - image: circleci/postgres:9.6.3-alpine
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: circle_test
-
+      - image: 'cimg/python:3.6'
     steps:
-
       - checkout
-      - restore_cache:
-          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
-      
-      - run: mvn dependency:go-offline
-      
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
-      
-      - run: mvn package
-      
-      - store_test_results:
-          path: target/surefire-reports
-      
-      - store_artifacts:
-          path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
-      - run:
-          name: Install the aws cli and python
-          command: |
-            sudo apt-get update
-            if ! [ -x "$(which python3)" ]; then
-              sudo apt-get -y install python3
-            fi
-            if ! [ -x "$(which pip3)" ]; then
-              sudo apt-get -y install python3-pip
-            fi
+      - run: mkdir bucket && echo "lorem ipsum" > bucket/build_asset.txt
+      - aws-s3/sync:
+          arguments: |
+            --acl public-read \
+            --cache-control "max-age=86400"
+          aws-access-key-id: AKIAQMQ4OVQ3I5KYH46O
+          aws-region: us-east-2
+          aws-secret-access-key: AKIAQMQ4OVQ3EH57GV6A
+          from: bucket
+          to: 's3://my-s3-bucket-name/prefix'
+      - aws-s3/copy:
+          arguments: '--dryrun'
+          from: target/demo-java-spring-0.0.1-SNAPSHOT.ja
+          to: 's3://codedeploycircleci/Files'

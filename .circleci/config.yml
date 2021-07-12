@@ -5,17 +5,16 @@ jobs:
       aws-cli: circleci/aws-cli@2.0
     
     working_directory: ~/circleci-demo-java-spring
-
-    docker:
+    docker: 
+      - image: cibuilds/aws:1.15.73
       - image: circleci/openjdk:8-jdk-stretch
       - image: circleci/postgres:9.6.3-alpine
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: circle_test
-          aws_access_key_id: $AWS_ACCESS_KEY_ID
-          aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_DB: circle_test
+      aws_access_key_id: $AWS_ACCESS_KEY_ID
+      aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
     steps:
-
       - checkout
       - restore_cache:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
@@ -28,15 +27,11 @@ jobs:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
       
       - run: mvn package
-      
       - store_test_results:
           path: target/surefire-reports
       
       - store_artifacts:
           path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
-      - aws_s3/copy:
-          from: target/demo-java-spring-0.0.1-SNAPSHOT.jar
-          to: s3://codedeploycircleci/Files        
       - run: 
           name: Deploy to S3 if tests pass and branch is develop
-          command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files
+          command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files --delete

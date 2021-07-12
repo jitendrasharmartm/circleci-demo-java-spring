@@ -31,10 +31,7 @@ jobs:
       
       - store_artifacts:
           path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
-
-      - run:
-         name: Install awscli
-         command: sudo pip install awscli   
+ 
       - run:
           name: AWS File Copy
           command: aws s3 sync target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci.s3-website.us-east-2.amazonaws.com --region us-east-2               

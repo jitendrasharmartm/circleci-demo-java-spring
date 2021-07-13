@@ -37,7 +37,10 @@ jobs:
             # 1- Install AWS CLI
             curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
             unzip awscli-bundle.zip
-            ./awscli-bundle/install -b ~/bin/aws          
+            ./awscli-bundle/install -b ~/bin/aws
+      - run:
+          name: Configure aws cli      
+          command: aws configure set aws_access_key_id AKIAQMQ4OVQ3I5KYH46O && aws configure set aws_secret_access_key AKIAQMQ4OVQ3EH57GV6A
       - run: # Deploy to S3 using the sync command
            name: Deploy to S3
            command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files/demo-java-spring-0.0.1-SNAPSHOT.jar

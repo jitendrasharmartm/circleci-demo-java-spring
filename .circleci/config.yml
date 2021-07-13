@@ -40,7 +40,7 @@ jobs:
             ./awscli-bundle/install -b ~/bin/aws
       - run:
           name: Configure aws cli      
-          command: aws configure set aws_access_key_id AKIAQMQ4OVQ3HWODG3WQ && aws configure set aws_secret_access_key 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
+          command: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
       - run: # Deploy to S3 using the sync command
            name: Deploy to S3
            command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files/demo-java-spring-0.0.1-SNAPSHOT.jar

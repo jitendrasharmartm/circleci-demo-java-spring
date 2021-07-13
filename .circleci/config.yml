@@ -1,4 +1,6 @@
-version: 2
+version: 2.1
+orbs:
+  s3: ngs/s3-deploy@0.0.1
 jobs:
   build:
     
@@ -14,13 +16,6 @@ jobs:
     steps:
 
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'
-      - run:
-          name: Keyscan mydomain.com (HACK)
-          command: ssh-keyscan -H 13.58.105.142 >> ~/.ssh/known_hosts   
-
       - restore_cache:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
       

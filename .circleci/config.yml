@@ -1,6 +1,6 @@
 version: 2.0
 jobs:
-  build:
+   push-semantic-versioned-image:
     
     working_directory: ~/circleci-demo-java-spring
 executors:

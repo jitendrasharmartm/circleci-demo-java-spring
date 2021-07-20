@@ -1,4 +1,5 @@
 version: 2.0
+build-test-and-approval-deploy:
 orbs:
   s3: ngs/s3-deploy@0.0.1
 jobs:
@@ -12,7 +13,7 @@ jobs:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
 
-    steps:
+    test1:
       - checkout
       - restore_cache:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
@@ -25,17 +26,4 @@ jobs:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
       
       - run: mvn package
-      
-      - run:
-          name: aws cli install
-          command: |
-            # 1- Install AWS CLI
-            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-            unzip awscli-bundle.zip
-            ./awscli-bundle/install -b ~/bin/aws
-      - run:
-          name: Configure aws cli      
-          command: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-      - run: # Deploy to S3 using the sync command
-           name: Deploy to S3
-           command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files/demo-java-spring-0.0.1-SNAPSHOT.jar
+    requires: # test1 will not run until the `build` job is completed.

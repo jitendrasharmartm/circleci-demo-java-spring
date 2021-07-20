@@ -1,10 +1,6 @@
 version: 2.0
-orbs:
-  s3: ngs/s3-deploy@0.0.1
-  
 jobs:
-  build:
-    
+  build:    
     working_directory: ~/circleci-demo-java-spring
     docker:
       - image: circleci/node:4.8.2

@@ -1,6 +1,7 @@
-version: 2.0
+version: 2
 jobs:
-  build:    
+  build:
+    
     working_directory: ~/circleci-demo-java-spring
     docker:
       - image: circleci/node:4.8.2

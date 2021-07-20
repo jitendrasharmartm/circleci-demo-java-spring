@@ -1,18 +1,17 @@
-version: 2
+version: 2.0
+orbs:
+  s3: ngs/s3-deploy@0.0.1
 jobs:
   build:
     
     working_directory: ~/circleci-demo-java-spring
     docker:
-      - image: circleci/node:4.8.2
       - image: circleci/openjdk:8-jdk-stretch
       - image: circleci/postgres:9.6.3-alpine
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
-  request-approval:
-    docker:
-      - image: circleci/node:4.8.2  
+
     steps:
       - checkout
       - restore_cache:

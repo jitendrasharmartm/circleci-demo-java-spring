@@ -20,6 +20,4 @@ jobs:
       - run:
           name: Keyscan mydomain.com (HACK)
           command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
-      - run:
-        name: ansible command
-        command: ansible all -m ping
+      - run: ansible all -m ping

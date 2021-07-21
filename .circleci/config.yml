@@ -22,3 +22,4 @@ jobs:
           command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
       - run:
          command: ssh ansadmin@3.128.197.11 && ls
+          "echo deployment done" 

@@ -21,5 +21,5 @@ jobs:
           name: Keyscan mydomain.com (HACK)
           command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
       - run:
-         command: ssh ansadmin@3.128.197.11 && ls
-          "echo deployment done" 
+         command: ssh ec2-user@3.128.197.11 && ls
+          

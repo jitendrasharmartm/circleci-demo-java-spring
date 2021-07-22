@@ -32,8 +32,11 @@ jobs:
          name: ssh from ec2 to Ansible 
          command: |
           ssh ec2-user@3.128.197.11
-          ssh ansadmin@localhost
+
       - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - '95:39:67:8e:fd:fe:28:7e:41:36:a6:15:79:1e:53:da'
       - run:
-         name: Ansible Command 
-         command: ansible all -m ping
+         name: Ansible user 
+         command: ssh ansadmin@3.128.197.11 'ansible all -m ping'

@@ -32,6 +32,6 @@ jobs:
       - run:
          name: Ansible user 
          command: |
-            ssh StrictHostKeyChecking=no ec2-user@3.128.197.11 
+            ssh -vvv -o StrictHostKeyChecking=no ec2-user@3.128.197.11 
             sudo su - ansadmin
             ansible-playbook test.yml

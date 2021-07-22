@@ -20,23 +20,22 @@ jobs:
           fingerprints:
             - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'
       - run:
-         name: Install software-properties-common packages
-         command: sudo apt-get install software-properties-common
-      - run:
-         name: Install software-properties-common packages
-         command: sudo apt-add-repository ppa:ansible/ansible -y
-      - run:
-         name: Install software-properties-common packages
+         name: Update packages
          command: sudo apt-get update
       - run:
-         name: Install software-properties-common packages
+         name: Add packages
+         command: sudo apt-add-repository ppa:ansible/ansible -y
+      - run:
+         name: Install Ansible packages
          command: sudo apt-get install ansible
       - run:
           name: Keyscan mydomain.com (HACK)
           command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
       - run:
-         name: Install software-properties-common packages
+         name: ssh to ec2 to Ansible 
          command: |
           ssh ec2-user@3.128.197.11
           ssh ansadmin@localhost
-          ansible all -m ping > /dev/null &
+      - run:
+         name: Ansible Command 
+         command: ansible all -m ping > /dev/null &

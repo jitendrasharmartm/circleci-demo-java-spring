@@ -23,9 +23,6 @@ jobs:
          name: Update packages
          command: sudo apt-get update
       - run:
-         name: Add packages
-         command: sudo apt-add-repository ppa:ansible/ansible -y
-      - run:
          name: Install Ansible packages
          command: sudo apt-get install ansible
       - run:

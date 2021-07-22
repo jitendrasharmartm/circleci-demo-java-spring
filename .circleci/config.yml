@@ -31,4 +31,4 @@ jobs:
           command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
       - run:
          name: Ansible user 
-         command: ssh ansadmin@3.128.197.11 && mkdir ansibletest
+         command: ssh -vvv -o StrictHostKeyChecking=no ansadmin@3.128.197.11 && ansible all -m ping

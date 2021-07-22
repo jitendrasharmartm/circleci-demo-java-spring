@@ -16,27 +16,19 @@ jobs:
     steps:
 
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'
       - run:
          name: Update packages
          command: sudo apt-get update
       - run:
          name: Install Ansible packages
          command: sudo apt-get install ansible
-      - run:
-          name: Keyscan mydomain.com (HACK)
-          command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
-      - run:
-         name: ssh from ec2 to Ansible 
-         command: |
-          ssh ec2-user@3.128.197.11
-
       - checkout
       - add_ssh_keys:
           fingerprints:
             - '95:39:67:8e:fd:fe:28:7e:41:36:a6:15:79:1e:53:da'
+      - run:
+          name: Keyscan mydomain.com (HACK)
+          command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
       - run:
          name: Ansible user 
          command: ssh ansadmin@3.128.197.11 'ansible all -m ping'

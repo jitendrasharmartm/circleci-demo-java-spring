@@ -26,5 +26,5 @@ jobs:
          name: ssh to ec2 instance
          command: |
           ssh ec2-user@3.128.197.11
-          sudo su - ansadmin
+          ssh ansadmin@localhost
           ansible all -m ping > /dev/null &

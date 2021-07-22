@@ -22,4 +22,4 @@ jobs:
           command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
       - run:
          name: ssh to ec2 instance
-         command: ssh ec2-user@3.128.197.11 'sudo mkdir /home/ansadmin/test1/test2'
+         command: ssh ec2-user@3.128.197.11 'sudo su - ansadmin mkdir /home/ansadmin/test1'

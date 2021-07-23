@@ -1,39 +1,38 @@
 version: 2.1
 
-# Define the jobs we want to run for this project
+orbs:
+  xmatters: xmatters/xmatters-orb@1.0.4
+
 jobs:
   build:
-    docker:
-      - image: circleci/<language>:<version TAG>
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    docker: 
+      - image: circleci/node:4.8.2
     steps:
-      - checkout
-      - run: echo "this is the build job"
-  test:
-    docker:
-      - image: circleci/<language>:<version TAG>
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    steps:
-      - checkout
-      - run: echo "this is the test job"
-  test1:
-    docker:
-      - image: circleci/<language>:<version TAG>
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    steps:
-      - checkout
-      - run: echo "this is the test job"
+      - run: echo "Building building building!"
 
-# Orchestrate our job run sequence
+  request-approval:
+    docker:
+      - image: circleci/node:4.8.2
+    steps:
+      - xmatters/notify:
+          recipients: Engineering Managers
+
+  deploy-stuff:
+    docker:
+      - image: circleci/node:4.8.2
+    steps:
+      - run: echo "Deploy stuff here"
+
 workflows:
-  build_and_test:
+  build-test-and-approval-deploy:
     jobs:
       - build
-      - test
-      - test1
+      - request-approval
+      - hold:
+          type: approval
+          requires:
+            - build
+            - request-approval
+      - deploy-stuff:
+          requires:
+            - hold

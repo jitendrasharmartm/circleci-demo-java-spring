@@ -1,37 +1,49 @@
-version: 2
-orbs:
-  ansible-playbook: orbss/ansible-playbook@0.0.5
+version: 2.0
+
 jobs:
   build:
-    
-    working_directory: ~/circleci-demo-java-spring
-
     docker:
-      - image: circleci/openjdk:8-jdk-stretch
-      - image: circleci/postgres:9.6.3-alpine
-        environment:
-          POSTGRES_USER: root
-          POSTGRES_DB: circle_test
-
+      - image: circleci/ruby:2.4-node
+      - image: circleci/postgres:9.4.12-alpine
+    working_directory: ~/circleci-demo-workflows
     steps:
+      - checkout
+      # Bundle install dependencies
+      - run: bundle install --path vendor/bundle
 
+      # Database setup
+      - run: bundle exec rake db:create db:schema:load
+
+      - run:
+          name: Run tests
+          command: rake
+
+  deploy:
+    machine:
+        enabled: true
+    working_directory: ~/circleci-demo-workflows
+    environment:
+      HEROKU_APP: "sleepy-refuge-55486"
+    steps:
       - checkout
       - run:
-         name: Update packages
-         command: sudo apt-get update
+          name: Setup Heroku
+          command: bash .circleci/setup-heroku.sh
+
       - run:
-         name: Install Ansible packages
-         command: sudo apt-get install ansible
-      - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - '93:b8:a6:3f:68:2f:4a:11:3b:45:06:85:a3:72:64:09'
-      - run:
-          name: Keyscan mydomain.com (HACK)
-          command: ssh-keyscan -H 3.128.197.11 >> ~/.ssh/known_hosts
-      - run:
-         name: Ansible user 
-         command: |
-            ssh -vvv -o StrictHostKeyChecking=no ec2-user@3.128.197.11 
-            sudo su - ansadmin
-            ansible-playbook test.yml
+          command: |
+            git push heroku sequential-branch-filter:master
+            heroku run rake db:migrate
+            sleep 5 # sleep for 5 seconds to wait for dynos
+            heroku restart
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: sequential-branch-filter

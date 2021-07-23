@@ -12,7 +12,7 @@ jobs:
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
-  build1: 
+ 
     steps:
       - checkout
       - restore_cache:
@@ -26,7 +26,7 @@ jobs:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
       
       - run: mvn package
-  build2: 
+  build1: 
     steps:
       - checkout     
       - run:
@@ -39,17 +39,14 @@ jobs:
       - run:
           name: Configure aws cli      
           command: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-  build3: 
+  build2: 
     steps:
       - checkout       
       - run: # Deploy to S3 using the sync command
            name: Deploy to S3
            command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files/demo-java-spring-0.0.1-SNAPSHOT.jar
-
-      - checkout
-          
   workflows:
-    version: 2.0
+    version: 2
 
     myworkflow:
       jobs:
@@ -60,6 +57,3 @@ jobs:
         - build2:
            requires:
              - build1
-        - build3:
-           requires:
-             - build3

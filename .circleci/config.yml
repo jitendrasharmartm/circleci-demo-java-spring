@@ -1,38 +1,62 @@
-version: 2.1
-
+version: 2.0
 orbs:
-  xmatters: xmatters/xmatters-orb@1.0.4
-
+  s3: ngs/s3-deploy@0.0.1
+  
 jobs:
-  build:
-    docker: 
-      - image: circleci/node:4.8.2
-    steps:
-      - run: echo "Building building building!"
-
-  request-approval:
+  build:    
+    working_directory: ~/circleci-demo-java-spring
     docker:
       - image: circleci/node:4.8.2
+      - image: circleci/openjdk:8-jdk-stretch
+      - image: circleci/postgres:9.6.3-alpine
+        environment:
+          POSTGRES_USER: root
+          POSTGRES_DB: circle_test
+  build1: 
     steps:
-      - xmatters/notify:
-          recipients: Engineering Managers
-
-  deploy-stuff:
-    docker:
-      - image: circleci/node:4.8.2
+      - checkout
+      - restore_cache:
+          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
+      
+      - run: mvn dependency:go-offline
+      
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
+      
+      - run: mvn package
+  build2: 
     steps:
-      - run: echo "Deploy stuff here"
+      - checkout     
+      - run:
+          name: aws cli install
+          command: |
+            # 1- Install AWS CLI
+            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+            unzip awscli-bundle.zip
+            ./awscli-bundle/install -b ~/bin/aws
+      - run:
+          name: Configure aws cli      
+          command: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+  build3: 
+    steps:
+      - checkout       
+      - run: # Deploy to S3 using the sync command
+           name: Deploy to S3
+           command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files/demo-java-spring-0.0.1-SNAPSHOT.jar
+  workflows:
+    version: 2
 
-workflows:
-  build-test-and-approval-deploy:
-    jobs:
-      - build
-      - request-approval
-      - hold:
-          type: approval
-          requires:
-            - build
-            - request-approval
-      - deploy-stuff:
-          requires:
-            - hold
+    myworkflow:
+      jobs:
+        - build
+        - build1:
+           requires:
+             - build
+        - build2:
+           requires:
+             - build1
+        - build3:
+           requires:
+             - build3

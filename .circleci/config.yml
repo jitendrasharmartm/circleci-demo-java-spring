@@ -30,21 +30,9 @@ jobs:
     steps:
       - checkout     
       - run:
-          name: aws cli install
-          command: |
-            # 1- Install AWS CLI
-            curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-            unzip awscli-bundle.zip
-            ./awscli-bundle/install -b ~/bin/aws
-      - run:
-          name: Configure aws cli      
-          command: aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-  build2: 
-    steps:
-      - checkout       
-      - run: # Deploy to S3 using the sync command
-           name: Deploy to S3
-           command: aws s3 cp target/demo-java-spring-0.0.1-SNAPSHOT.jar s3://codedeploycircleci/Files/demo-java-spring-0.0.1-SNAPSHOT.jar
+          name: Copy file on Nexus
+          command: scp target/demo-java-spring-0.0.1-SNAPSHOT.jar http://ec2-18-224-25-177.us-east-2.compute.amazonaws.com:8081/repository/maven-releases/artifacts/1.0/demo-java-spring-0.0.1-SNAPSHOT.jar
+ 
   workflows:
     version: 2
 
@@ -54,6 +42,6 @@ jobs:
         - build1:
            requires:
              - build
-        - build2:
-           requires:
-             - build1
+ #       - build2:
+#           requires:
+#             - build1

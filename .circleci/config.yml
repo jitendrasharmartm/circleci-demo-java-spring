@@ -28,4 +28,8 @@ jobs:
       
       - run:  
            name: Copy files on nexus repo
-           command: scp -r target/demo-java-spring-0.0.1-SNAPSHOT.jar http://ec2-18-224-25-177.us-east-2.compute.amazonaws.com:8081/repository/maven-releases/Artifacts/1.0/demo-java-spring-0.0.1-SNAPSHOT.jar
+           command: |
+              mv target/demo-java-spring-0.0.1-SNAPSHOT.jar target/demo-java-spring-0.0.1-SNAPSHOT_$CIRCLE_BUILD_NUM.jar
+              ls target/
+              cd target/ && curl -v -u admin:admin123 --upload-file demo-java-spring-0.0.1-SNAPSHOT_$CIRCLE_BUILD_NUM.jar http://ec2-18-224-25-177.us-east-2.compute.amazonaws.com:8081/repository/maven-releases/Artifacts/1.0/demo-java-spring-0.0.1-SNAPSHOT_$CIRCLE_BUILD_NUM.jar
+

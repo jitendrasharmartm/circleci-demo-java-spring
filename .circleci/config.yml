@@ -1,18 +1,17 @@
 version: 2.0
 orbs:
   s3: ngs/s3-deploy@0.0.1
-  
 jobs:
-  build:    
+  build:
+    
     working_directory: ~/circleci-demo-java-spring
     docker:
-      - image: circleci/node:4.8.2
       - image: circleci/openjdk:8-jdk-stretch
       - image: circleci/postgres:9.6.3-alpine
         environment:
           POSTGRES_USER: root
           POSTGRES_DB: circle_test
- 
+
     steps:
       - checkout
       - restore_cache:
@@ -26,22 +25,7 @@ jobs:
           key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
       
       - run: mvn package
-  build1: 
-    steps:
-      - checkout     
-      - run:
-          name: Copy file on Nexus
-          command: scp target/demo-java-spring-0.0.1-SNAPSHOT.jar http://ec2-18-224-25-177.us-east-2.compute.amazonaws.com:8081/repository/maven-releases/artifacts/1.0/demo-java-spring-0.0.1-SNAPSHOT.jar
- 
-  workflows:
-    version: 2
-
-    myworkflow:
-      jobs:
-        - build
-        - build1:
-           requires:
-             - build
- #       - build2:
-#           requires:
-#             - build1
+      
+      - run:  
+          name: Copy files on nexus repo 
+          command: scp -r target/demo-java-spring-0.0.1-SNAPSHOT.jar http://ec2-18-224-25-177.us-east-2.compute.amazonaws.com:8081/repository/maven-releases/Artifacts/1.0/demo-java-spring-0.0.1-SNAPSHOT.jar
